@@ -1,0 +1,33 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    env_file:
+      - .env.test
+    environment:
+      APP_ENV: test
+    command: ["pytest", "tests"]
+    depends_on: [db, redis]
+
+  worker:
+    build:
+      context: .
+      dockerfile: docker/worker.Dockerfile
+    env_file:
+      - .env.test
+    environment:
+      APP_ENV: test
+    command: ["pytest", "-q", "tests/workers"]
+    depends_on: [db, redis]
+
+  alembic:
+    build:
+      context: .
+      dockerfile: docker/alembic.Dockerfile
+    env_file:
+      - .env.test
+    environment:
+      APP_ENV: test
+    command: ["alembic", "upgrade", "head"]
+    depends_on: [db]

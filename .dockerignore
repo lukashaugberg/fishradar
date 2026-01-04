@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+venv/
+.env
+.env.*
+
+# Git and IDE stuff
+.git
+.gitignore
+.vscode/
+.idea/
+
+# Local build/output
+dist/
+build/
+*.egg-info
+
+# Tests (optional, if you don’t need them in prod)
+tests/

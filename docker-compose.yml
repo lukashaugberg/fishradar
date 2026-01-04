@@ -1,0 +1,61 @@
+services:
+  db:
+    image: postgres:17
+    env_file: .env.docker
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports: ["5433:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:latest
+  
+  alembic:
+    build:
+      context: .
+      dockerfile: docker/alembic.Dockerfile
+    env_file: .env.docker
+    environment:
+      APP_ENV: dev
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["alembic", "upgrade", "head"]
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    env_file: .env.docker
+    environment:
+      APP_ENV: dev
+    ports: ["8000:8000"]
+    depends_on:
+      alembic:
+        condition: service_completed_successfully
+      redis:
+        condition: service_started
+
+  worker:
+    build:
+      context: .
+      dockerfile: docker/worker.Dockerfile
+    env_file: .env.docker
+    environment:
+      APP_ENV: dev
+    depends_on:
+      alembic:
+        condition: service_completed_successfully
+      redis:
+        condition: service_started
+
+volumes:
+  pgdata:
