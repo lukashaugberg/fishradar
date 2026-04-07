@@ -1,9 +1,7 @@
 from fastapi import FastAPI
 
 from app.api_app import api_app
-from app.system.health import router as health_router
-
-app = FastAPI()
+from app.api.routes.health import router as health_router
 
 
 def create_main_app() -> FastAPI:

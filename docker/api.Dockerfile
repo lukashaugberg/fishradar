@@ -1,4 +1,4 @@
-FROM base as api
+FROM base AS api
 
 # Environment can be ovverridden by docker-compose
 ENV APP_ENV=prod

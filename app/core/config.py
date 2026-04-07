@@ -37,6 +37,10 @@ class Config(BaseSettings):
         alias="ASTRO_API_KEY"
     )
 
+    jwt_secret_key: SecretStr = Field(alias="JWT_SECRET_KEY")
+    jwt_algorithm: str = Field(default="HS256", alias="JWT_ALGORITHM")
+    jwt_acess_token_exp_minutes: int = Field(default=60, alias="JWT_ACCESS_TOKEN_EXP_MINUTES")
+
     app_name: str = "FishRadar"
     debug: bool = False
 

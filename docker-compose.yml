@@ -2,10 +2,6 @@ services:
   db:
     image: postgres:17
     env_file: .env.docker
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports: ["5433:5432"]
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -23,8 +19,6 @@ services:
       context: .
       dockerfile: docker/alembic.Dockerfile
     env_file: .env.docker
-    environment:
-      APP_ENV: dev
     depends_on:
       db:
         condition: service_healthy
@@ -35,8 +29,6 @@ services:
       context: .
       dockerfile: docker/api.Dockerfile
     env_file: .env.docker
-    environment:
-      APP_ENV: dev
     ports: ["8000:8000"]
     depends_on:
       alembic:
@@ -49,8 +41,6 @@ services:
       context: .
       dockerfile: docker/worker.Dockerfile
     env_file: .env.docker
-    environment:
-      APP_ENV: dev
     depends_on:
       alembic:
         condition: service_completed_successfully
