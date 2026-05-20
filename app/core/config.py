@@ -14,13 +14,14 @@ class Config(BaseSettings):
     # App/Environment
     app_env: Literal["dev", "staging", "prod"] = Field(default="dev", alias="APP_ENV")
 
-    # Postgres
-    postgres_host: str =  Field(default="db", alias="POSTGRES_HOST")
-    postgres_port: int = Field(default=5432, alias="POSTGRES_PORT")
+    # MySQL
+    mysql_host: str =  Field(default="db", alias="MYSQL_HOST")
+    mysql_port: int = Field(default=3306, alias="MYSQL_PORT")
     # Required without default values
-    postgres_db: str = Field(alias="POSTGRES_DB")
-    postgres_user: str = Field(alias="POSTGRES_USER")
-    postgres_password: SecretStr = Field(alias="POSTGRES_PASSWORD")  # Use SecretStr for hiding content when logged
+    mysql_database: str = Field(alias="MYSQL_DATABASE")
+    mysql_user: str = Field(alias="MYSQL_USER")
+    mysql_password: SecretStr = Field(alias="MYSQL_PASSWORD")
+    mysql_root_password: SecretStr = Field(alias="MYSQL_ROOT_PASSWORD")
 
     # Redis
     redis_host: str = Field(default="redis", alias="REDIS_HOST")
@@ -39,17 +40,17 @@ class Config(BaseSettings):
 
     jwt_secret_key: SecretStr = Field(alias="JWT_SECRET_KEY")
     jwt_algorithm: str = Field(default="HS256", alias="JWT_ALGORITHM")
-    jwt_acess_token_exp_minutes: int = Field(default=60, alias="JWT_ACCESS_TOKEN_EXP_MINUTES")
+    jwt_access_token_exp_minutes: int = Field(default=60, alias="JWT_ACCESS_TOKEN_EXP_MINUTES")
 
     app_name: str = "FishRadar"
     debug: bool = False
 
     @property
     def db_url(self) -> str:
-        password = self.postgres_password.get_secret_value()
+        password = self.mysql_password.get_secret_value()
         return (
-            f"postgresql+psycopg://{self.postgres_user}:{password}"
-            f"@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
+            f"mysql+pymysql://{self.mysql_user}:{password}"
+            f"@{self.mysql_host}:{self.mysql_port}/{self.mysql_database}"
         )
 
     @property

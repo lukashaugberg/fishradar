@@ -54,6 +54,6 @@ class UserRepository:
         db.add(user)  # add to session
         db.flush()  # INSERT (user.id is available)
         db.refresh(user)  # gives 'user' all server-generated values (we do
-                          # do this to be able to access these values without
+                          # this to be able to access these values without
                           # committing (committing happens in middleware))
         return user

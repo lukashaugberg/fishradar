@@ -9,7 +9,8 @@ class DBSessionMiddleWare(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Response:
         # create one session per request
         db = SessionLocal()
-        request.state.db = db  # attach it to the request object
+        # attach it to the request object
+        request.state.db = db
 
         try:
             response = await call_next(request)  # let the route run
